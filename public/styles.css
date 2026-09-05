@@ -130,11 +130,12 @@ nav a:hover {
 }
 
 .hero-lead {
-  max-width: 34em;
+  max-width: 24em;
   margin: 0 auto;
   font-size: 17px;
   line-height: 1.75;
   color: var(--text-sub);
+  text-wrap: pretty;
 }
 
 .store {

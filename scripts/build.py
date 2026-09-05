@@ -101,15 +101,22 @@ def split_home_body(body: str) -> tuple[str, str, str]:
     return match.group(1), match.group(2), match.group(3)
 
 
+def format_hero_lead(lead: str) -> str:
+    return lead.replace(
+        "iPhone の端末内で文字起こし",
+        "iPhone の端末内で<br>文字起こし",
+        1,
+    )
+
+
 def wrap(title: str, description: str, lang: str, canonical: str, body: str, home: bool) -> str:
     heading, lead, rest = split_home_body(body) if home else ("Transcribe Edge", "", body)
-    hero = ""
     main = f'  <main class="prose">\n{body}\n  </main>'
     if home:
         hero = f"""  <section class="hero">
     <img class="hero-icon" src="/icon.png" width="112" height="112" alt="">
     <h1>{heading}</h1>
-    <p class="hero-lead">{lead}</p>
+    <p class="hero-lead">{format_hero_lead(lead)}</p>
     <div class="store" aria-disabled="true">
       <img class="store-badge" src="/badges/download-on-the-app-store-jp.svg" width="109" height="40" alt="Download on the App Store">
       <p class="store-note">近日公開</p>
