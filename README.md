@@ -16,6 +16,8 @@
 
 作品リンクは名刺カード上で、Works（6F / くらら / カクヨム / Transcribe Edge）と Follow（X / GitHub / note）に分けている。
 
+apex の `/transcribe-edge/` はサブドメインへ 301 する。
+
 規約とポリシーの原稿は `content/transcribe-edge/`。直したあとは:
 
 ```bash
