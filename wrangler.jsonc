@@ -1,0 +1,24 @@
+{
+  "name": "osushi-cr-dev",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-05",
+  "account_id": "97ee5b3e850abad60e5d73fcf8f1390c",
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "routes": [
+    { "pattern": "osushi-cr.dev", "custom_domain": true },
+    { "pattern": "www.osushi-cr.dev", "custom_domain": true },
+    { "pattern": "transcribe.osushi-cr.dev", "custom_domain": true }
+  ]
+}

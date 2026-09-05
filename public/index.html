@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お寿司 — AI Product Builder / PM / Engineer</title>
+  <meta name="description" content="AITuber・ゲーム・小説をつくる、お寿司 (@osushi_cr) のデジタル名刺">
+  <link rel="canonical" href="https://osushi-cr.dev/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍣</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+    :root {
+      --orange: #ff6b35;
+      --orange-light: #fff3ed;
+      --orange-glow: rgba(255, 107, 53, 0.15);
+      --bg: #f8f6f3;
+      --card-bg: #ffffff;
+      --text: #1a1a1a;
+      --text-sub: #888;
+      --radius: 20px;
+    }
+
+    html { height: 100%; }
+
+    body {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      background-image:
+        radial-gradient(circle at 20% 30%, var(--orange-glow) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 180, 130, 0.08) 0%, transparent 50%);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    /* Floating sushi */
+    .floater {
+      position: fixed;
+      font-size: 24px;
+      opacity: 0;
+      animation: float 12s infinite ease-in-out;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .floater:nth-child(1) { left: 8%; top: 15%; animation-delay: 0s; font-size: 20px; }
+    .floater:nth-child(2) { left: 85%; top: 25%; animation-delay: 3s; font-size: 16px; }
+    .floater:nth-child(3) { left: 12%; top: 75%; animation-delay: 6s; font-size: 22px; }
+    .floater:nth-child(4) { left: 78%; top: 80%; animation-delay: 9s; font-size: 18px; }
+
+    @keyframes float {
+      0%, 100% { opacity: 0; transform: translateY(0) rotate(0deg); }
+      20% { opacity: 0.3; }
+      50% { opacity: 0.2; transform: translateY(-30px) rotate(10deg); }
+      80% { opacity: 0.3; }
+    }
+
+    /* Card */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 48px 40px 40px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 4px 16px rgba(0,0,0,0.04),
+        0 12px 40px rgba(0,0,0,0.06);
+      animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--orange);
+      animation: sushiBounce 0.6s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes sushiBounce {
+      from { opacity: 0; transform: scale(0) rotate(-20deg); }
+      to { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    /* Name */
+    .name {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 900;
+      font-size: 32px;
+      color: var(--text);
+      margin-top: 8px;
+      animation: fadeUp 0.5s 0.4s ease both;
+    }
+
+    .handle {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-top: 2px;
+      font-weight: 500;
+      animation: fadeUp 0.5s 0.5s ease both;
+    }
+
+    .role {
+      margin-top: 14px;
+      animation: fadeUp 0.5s 0.55s ease both;
+    }
+
+    .role-primary {
+      color: var(--orange);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .role-secondary {
+      margin-top: 4px;
+      color: var(--text-sub);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .fields {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 13px;
+      animation: fadeUp 0.5s 0.6s ease both;
+    }
+
+    .field {
+      padding: 5px 9px;
+      border: 1px solid rgba(255, 107, 53, .28);
+      border-radius: 999px;
+      background: var(--orange-light);
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Divider */
+    .divider {
+      width: 40px;
+      height: 3px;
+      background: var(--orange);
+      border-radius: 2px;
+      margin: 20px auto;
+      animation: fadeUp 0.5s 0.65s ease both;
+    }
+
+    /* Links */
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--orange-light);
+      border: 1.5px solid transparent;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.25s ease;
+      animation: fadeUp 0.5s ease both;
+    }
+    .link:nth-child(1) { animation-delay: 0.7s; }
+    .link:nth-child(2) { animation-delay: 0.77s; }
+    .link:nth-child(3) { animation-delay: 0.84s; }
+    .link:nth-child(4) { animation-delay: 0.91s; }
+
+    .link:hover {
+      border-color: var(--orange);
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--orange-glow);
+    }
+
+    .link:active {
+      transform: translateY(0);
+    }
+
+    .link-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--orange);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .link-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
+    }
+
+    .link-text {
+      text-align: left;
+    }
+
+    .link-label {
+      font-size: 12px;
+      color: var(--text-sub);
+      font-weight: 400;
+    }
+
+    /* QR */
+    .qr-section {
+      margin-top: 24px;
+      animation: fadeUp 0.5s 1.02s ease both;
+    }
+
+    .qr-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+    }
+
+    #qrcode {
+      display: inline-block;
+      padding: 10px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid #f0ece8;
+    }
+
+    #qrcode canvas {
+      display: block;
+      border-radius: 6px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #ccc;
+      animation: fadeUp 0.5s 1.12s ease both;
+    }
+
+    @media (max-width: 420px) {
+      .card { padding: 40px 28px 32px; }
+      .name { font-size: 28px; }
+      .sushi { font-size: 48px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floater">🍣</div>
+  <div class="floater">🍙</div>
+  <div class="floater">🍣</div>
+  <div class="floater">🍙</div>
+
+  <div class="card">
+    <img src="avatar.png" alt="お寿司" class="avatar">
+    <div class="name">お寿司</div>
+    <div class="handle">(@osushi_cr)</div>
+    <div class="role">
+      <div class="role-primary">AI Product Builder</div>
+      <div class="role-secondary">PM / Engineer</div>
+    </div>
+    <div class="fields" aria-label="制作領域">
+      <span class="field">AITuber</span>
+      <span class="field">Game</span>
+      <span class="field">Novel</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="links">
+      <a href="https://github.com/osushi-cr" target="_blank" rel="noopener" class="link">
+        <div class="link-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </div>
+        <div class="link-text">
+          <div>osushi-cr</div>
+          <div class="link-label">GitHub</div>
+        </div>
+      </a>
+
+      <a href="https://x.com/osushi_cr" target="_blank" rel="noopener" class="link">
+        <div class="link-icon">
+          <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </div>
+        <div class="link-text">
+          <div>@osushi_cr</div>
+          <div class="link-label">X (Twitter)</div>
+        </div>
+      </a>
+
+      <a href="https://note.com/osushi_cr" target="_blank" rel="noopener" class="link">
+        <div class="link-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 3h10v2H7V8zm0 4h7v2H7v-2z"/></svg>
+        </div>
+        <div class="link-text">
+          <div>osushi_cr</div>
+          <div class="link-label">note</div>
+        </div>
+      </a>
+
+      <a href="https://transcribe.osushi-cr.dev/" class="link">
+        <div class="link-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v2H4V5zm0 4h10v2H4V9zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/></svg>
+        </div>
+        <div class="link-text">
+          <div>Transcribe Edge</div>
+          <div class="link-label">iPhone app</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="qr-section">
+      <div class="qr-label">Scan to save</div>
+      <div id="qrcode"></div>
+    </div>
+
+    <div class="footer">Built with Claude Code &amp; Codex 🤖</div>
+  </div>
+
+  <script src="/vendor/qrcode.min.js"></script>
+  <script>
+    const qr = qrcode(0, 'M');
+    qr.addData('https://osushi-cr.dev/');
+    qr.make();
+    const size = 120;
+    const modules = qr.getModuleCount();
+    const cellSize = size / modules;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#1a1a1a';
+    for (let row = 0; row < modules; row++) {
+      for (let col = 0; col < modules; col++) {
+        if (qr.isDark(row, col)) {
+          ctx.beginPath();
+          ctx.roundRect(col * cellSize, row * cellSize, cellSize, cellSize, cellSize * 0.25);
+          ctx.fill();
+        }
+      }
+    }
+    document.getElementById('qrcode').appendChild(canvas);
+  </script>
+</body>
+</html>
