@@ -15,9 +15,10 @@ PAGES = {
     "index.md": {
         "out": PUBLIC / "index.html",
         "title": "Transcribe Edge",
-        "description": "会議を、端末の中で議事録にする iPhone アプリです。",
+        "description": "ウェブ会議のあと、iPhone の端末内で文字起こしと議事録をつくるアプリです。",
         "lang": "ja",
         "canonical": "https://transcribe.osushi-cr.dev/",
+        "home": True,
     },
     "privacy/index.md": {
         "out": PUBLIC / "privacy" / "index.html",
@@ -93,7 +94,29 @@ def markdown_to_html(source: str) -> str:
     return "\n".join(out)
 
 
-def wrap(title: str, description: str, lang: str, canonical: str, body: str) -> str:
+def split_home_body(body: str) -> tuple[str, str, str]:
+    match = re.match(r"<h1>(.*?)</h1>\s*<p>(.*?)</p>\s*(.*)", body, re.S)
+    if not match:
+        return "Transcribe Edge", "", body
+    return match.group(1), match.group(2), match.group(3)
+
+
+def wrap(title: str, description: str, lang: str, canonical: str, body: str, home: bool) -> str:
+    heading, lead, rest = split_home_body(body) if home else ("Transcribe Edge", "", body)
+    hero = ""
+    main = f'  <main class="prose">\n{body}\n  </main>'
+    if home:
+        hero = f"""  <section class="hero">
+    <img class="hero-icon" src="/icon.png" width="112" height="112" alt="">
+    <h1>{heading}</h1>
+    <p class="hero-lead">{lead}</p>
+    <div class="store" aria-disabled="true">
+      <img class="store-badge" src="/badges/download-on-the-app-store-jp.svg" width="109" height="40" alt="Download on the App Store">
+      <p class="store-note">近日公開</p>
+    </div>
+  </section>"""
+        main = f"{hero}\n  <main class=\"prose\">\n{rest}\n  </main>"
+
     return f"""<!DOCTYPE html>
 <html lang="{html.escape(lang)}">
 <head>
@@ -102,7 +125,11 @@ def wrap(title: str, description: str, lang: str, canonical: str, body: str) -> 
   <title>{html.escape(title)}</title>
   <meta name="description" content="{html.escape(description)}">
   <link rel="canonical" href="{html.escape(canonical)}">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍣</text></svg>">
+  <link rel="icon" href="/icon.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:title" content="{html.escape(title)}">
+  <meta property="og:description" content="{html.escape(description)}">
+  <meta property="og:image" content="https://transcribe.osushi-cr.dev/icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
@@ -110,19 +137,19 @@ def wrap(title: str, description: str, lang: str, canonical: str, body: str) -> 
 </head>
 <body class="doc">
   <header class="site-header">
-    <a class="brand" href="https://osushi-cr.dev/">お寿司</a>
+    <a class="brand" href="/">
+      <img class="brand-logo" src="/icon.png" width="36" height="36" alt="">
+      <span>Transcribe Edge</span>
+    </a>
     <nav>
-      <a href="/">Transcribe Edge</a>
-      <a href="/terms/">Terms</a>
-      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">利用規約</a>
+      <a href="/privacy/">プライバシー</a>
     </nav>
   </header>
-  <main class="prose">
-{body}
-  </main>
+{main}
   <footer class="site-footer">
-    <a href="https://osushi-cr.dev/">お寿司 @osushi_cr</a>
-    <span>お寿司 · 2026</span>
+    <p class="footer-copy">© 2026 <a href="https://osushi-cr.dev/">お寿司</a></p>
+    <p class="footer-legal">App Store and the App Store logo are trademarks of Apple&nbsp;Inc.</p>
   </footer>
 </body>
 </html>
@@ -134,7 +161,14 @@ def main() -> None:
         source = strip_front_matter((CONTENT / rel).read_text())
         body = markdown_to_html(source)
         meta["out"].parent.mkdir(parents=True, exist_ok=True)
-        html_out = wrap(meta["title"], meta["description"], meta["lang"], meta["canonical"], body)
+        html_out = wrap(
+            meta["title"],
+            meta["description"],
+            meta["lang"],
+            meta["canonical"],
+            body,
+            bool(meta.get("home")),
+        )
         meta["out"].write_text(html_out)
         print(meta["out"].relative_to(ROOT))
 
