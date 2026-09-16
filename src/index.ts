@@ -1,3 +1,5 @@
+import { handleInquiry } from "./inquiry";
+
 const HUB_HOST = "osushi-cr.dev";
 const PRODUCT_HOST = "transcribe.osushi-cr.dev";
 const PRODUCT_PREFIX = "/transcribe-edge";
@@ -21,6 +23,15 @@ export default {
   async fetch(request, env): Promise<Response> {
     const url = new URL(request.url);
     const host = url.hostname;
+
+    if (url.pathname === "/inquiry") {
+      return handleInquiry(request, env);
+    }
+
+    if (url.pathname === "/hello" || url.pathname === "/hello/") {
+      url.pathname = "/contact/";
+      return Response.redirect(url.toString(), 301);
+    }
 
     if (host === "www.osushi-cr.dev") {
       url.hostname = HUB_HOST;
