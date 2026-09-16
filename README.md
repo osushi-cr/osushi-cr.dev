@@ -9,13 +9,14 @@
 | https://www.youtube.com/@kurara_ai_news | くらら（AITuber） |
 | https://6f.osushi-cr.dev/ | 6F（別 Pages プロジェクト） |
 | https://kakuyomu.jp/users/yoshitetsu | カクヨム |
+| https://mypage.syosetu.com/417296/ | 小説家になろう |
 | https://transcribe.osushi-cr.dev/ | Transcribe Edge |
 | https://transcribe.osushi-cr.dev/privacy/ | プライバシーポリシー |
 | https://transcribe.osushi-cr.dev/terms/ | 利用規約 |
 
 ソース: https://github.com/osushi-cr/osushi-cr.dev
 
-作品リンクは名刺カード上で、Works（6F / くらら / カクヨム / Transcribe Edge）と Follow（X / GitHub / note / お問い合わせ）に分けている。問い合わせは `/contact/` のフォームから `POST /inquiry`。Notion に残しつつ、作成時にメンションして通知を飛ばす。メールでも気づきたいときは `INQUIRY_EMAIL` を入れる。
+作品リンクは名刺カード上で、Works（6F / くらら / カクヨム / なろう / Transcribe Edge）と Follow（X / GitHub / note / お問い合わせ）に分けている。問い合わせは `/contact/` のフォームから `POST /inquiry`。Notion に残しつつ、作成時にメンションして通知を飛ばす。メールでも気づきたいときは `INQUIRY_EMAIL` を入れる。
 
 ```bash
 npx wrangler secret put NOTION_TOKEN
