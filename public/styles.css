@@ -267,6 +267,86 @@ nav a:hover {
   font-weight: 700;
 }
 
+.offers {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 8px;
+}
+
+.offer {
+  background: var(--orange-light);
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+
+.offer h3 {
+  margin: 0 0 6px !important;
+  font-size: 18px !important;
+}
+
+.offer p {
+  margin: 0;
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+}
+
+.apply {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border: 1.5px solid rgba(255, 107, 53, 0.28);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.apply p:last-child {
+  margin-bottom: 0;
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 8px;
+  background: var(--orange);
+  color: #fff !important;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-weight: 700;
+}
+
+.cta:hover {
+  color: #fff !important;
+  background: #d45224;
+}
+
+.steps {
+  counter-reset: step;
+  list-style: none;
+  margin-left: 0 !important;
+}
+
+.steps li {
+  position: relative;
+  padding-left: 36px;
+}
+
+.steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
 @media (max-width: 640px) {
   .prose {
     padding: 28px 22px 36px;
