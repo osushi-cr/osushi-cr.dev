@@ -28,6 +28,11 @@ export default {
       return handleInquiry(request, env);
     }
 
+    if (url.pathname === "/hello" || url.pathname === "/hello/") {
+      url.pathname = "/contact/";
+      return Response.redirect(url.toString(), 301);
+    }
+
     if (host === "www.osushi-cr.dev") {
       url.hostname = HUB_HOST;
       return Response.redirect(url.toString(), 301);

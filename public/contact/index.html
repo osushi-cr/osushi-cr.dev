@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>仕事の相談 — お寿司</title>
-  <meta name="description" content="仕事の相談、お気軽にどうぞ。お寿司（@osushi_cr）">
-  <link rel="canonical" href="https://osushi-cr.dev/hello/">
+  <title>お問い合わせ — お寿司</title>
+  <meta name="description" content="お仕事の相談やご質問などなんでもご連絡ください。お寿司（@osushi_cr）">
+  <link rel="canonical" href="https://osushi-cr.dev/contact/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍣</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,7 +43,7 @@
       background: var(--card-bg);
       border-radius: var(--radius);
       padding: 36px 32px 32px;
-      max-width: 380px;
+      max-width: 400px;
       width: 100%;
       text-align: center;
       box-shadow:
@@ -65,19 +65,20 @@
     .title {
       font-family: 'Zen Maru Gothic', sans-serif;
       font-weight: 900;
-      font-size: 22px;
+      font-size: 24px;
       color: var(--text);
     }
 
     .lead {
-      margin-top: 8px;
+      margin-top: 12px;
       font-family: 'Zen Maru Gothic', sans-serif;
       font-size: 14px;
+      line-height: 1.8;
       color: var(--text-sub);
     }
 
     .hello {
-      margin-top: 20px;
+      margin-top: 22px;
       text-align: left;
     }
 
@@ -89,9 +90,9 @@
       background: #fff;
       color: var(--text);
       font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: 14px;
-      padding: 10px 12px;
-      margin-top: 8px;
+      font-size: 15px;
+      padding: 14px 14px;
+      margin-top: 10px;
       outline: none;
       resize: vertical;
     }
@@ -101,7 +102,7 @@
       border-color: var(--orange);
     }
 
-    .hello textarea { min-height: 120px; }
+    .hello textarea { min-height: 240px; }
 
     .hello-hp {
       position: absolute;
@@ -112,15 +113,15 @@
 
     .hello button {
       width: 100%;
-      margin-top: 10px;
+      margin-top: 14px;
       border: 0;
       border-radius: 12px;
       background: var(--orange);
       color: #fff;
       font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
-      padding: 11px 14px;
+      padding: 14px 16px;
       cursor: pointer;
     }
 
@@ -128,29 +129,30 @@
     .hello button:disabled { opacity: .6; cursor: wait; }
 
     .hello-status {
-      margin-top: 8px;
+      margin-top: 10px;
       text-align: center;
       font-size: 13px;
       color: var(--text-sub);
     }
 
     @media (max-width: 420px) {
-      .card { padding: 32px 24px 28px; }
+      .card { padding: 32px 22px 28px; }
+      .hello textarea { min-height: 220px; }
     }
   </style>
 </head>
 <body>
   <div class="card">
     <a class="back" href="/">← 名刺へ</a>
-    <h1 class="title">仕事の相談</h1>
-    <p class="lead">お気軽にどうぞ</p>
+    <h1 class="title">お問い合わせ</h1>
+    <p class="lead">お仕事の相談やご質問などなんでもご連絡ください</p>
     <form class="hello" id="hello" action="/inquiry" method="post">
       <label class="hello-hp" for="hello-name">お名前</label>
       <input id="hello-name" name="name" maxlength="80" autocomplete="name" placeholder="お名前">
       <label class="hello-hp" for="hello-contact">連絡先</label>
       <input id="hello-contact" name="contact" maxlength="200" autocomplete="email" placeholder="連絡先">
-      <label class="hello-hp" for="hello-message">相談</label>
-      <textarea id="hello-message" name="message" required maxlength="4000" placeholder="相談"></textarea>
+      <label class="hello-hp" for="hello-message">ご用件</label>
+      <textarea id="hello-message" name="message" required maxlength="4000" placeholder="ご用件"></textarea>
       <input class="hello-hp" name="website" tabindex="-1" autocomplete="off">
       <button type="submit">送る</button>
       <p class="hello-status" id="hello-status" hidden></p>

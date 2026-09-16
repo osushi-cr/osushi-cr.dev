@@ -1,4 +1,5 @@
 export const NOTION_DATABASE_ID = "da6387afa74440bcb9d18d4a12b119e7";
+export const NOTION_NOTIFY_USER_ID = "0adcfcbe-470d-44aa-989d-56d3fadcef20";
 
 export type Inquiry = {
   name: string;
@@ -39,11 +40,11 @@ function richText(content: string) {
   };
 }
 
-async function tryDeliver(task: Promise<boolean>): Promise<boolean> {
+async function tryDeliver<T>(task: Promise<T>, fallback: T): Promise<T> {
   try {
     return await task;
   } catch {
-    return false;
+    return fallback;
   }
 }
 
@@ -51,17 +52,23 @@ export async function deliverInquiry(
   inquiry: Inquiry,
   env: Pick<Env, "NOTION_TOKEN" | "INQUIRY_EMAIL" | "INQUIRY_WEBHOOK">,
 ): Promise<boolean> {
-  const title = inquiry.name || inquiry.contact || "相談";
-  const delivered = await Promise.all([
-    env.NOTION_TOKEN ? tryDeliver(postToNotion(inquiry, title, env.NOTION_TOKEN)) : false,
-    env.INQUIRY_EMAIL ? tryDeliver(postToFormSubmit(inquiry, env.INQUIRY_EMAIL)) : false,
-    env.INQUIRY_WEBHOOK ? tryDeliver(postToWebhook(inquiry, env.INQUIRY_WEBHOOK)) : false,
+  const title = inquiry.name || inquiry.contact || "お問い合わせ";
+  const pageId = env.NOTION_TOKEN
+    ? await tryDeliver(postToNotion(inquiry, title, env.NOTION_TOKEN), null)
+    : null;
+
+  const notified = await Promise.all([
+    pageId && env.NOTION_TOKEN
+      ? tryDeliver(notifyNotionMention(pageId, env.NOTION_TOKEN), false)
+      : false,
+    env.INQUIRY_EMAIL ? tryDeliver(postToFormSubmit(inquiry, env.INQUIRY_EMAIL), false) : false,
+    env.INQUIRY_WEBHOOK ? tryDeliver(postToWebhook(inquiry, env.INQUIRY_WEBHOOK), false) : false,
   ]);
 
-  return delivered.some(Boolean);
+  return Boolean(pageId) || notified.some(Boolean);
 }
 
-async function postToNotion(inquiry: Inquiry, title: string, token: string): Promise<boolean> {
+async function postToNotion(inquiry: Inquiry, title: string, token: string): Promise<string | null> {
   const response = await fetch("https://api.notion.com/v1/pages", {
     method: "POST",
     headers: {
@@ -79,6 +86,32 @@ async function postToNotion(inquiry: Inquiry, title: string, token: string): Pro
       },
     }),
   });
+  if (!response.ok) {
+    return null;
+  }
+  const body = (await response.json()) as { id?: string };
+  return body.id ?? null;
+}
+
+async function notifyNotionMention(pageId: string, token: string): Promise<boolean> {
+  const response = await fetch("https://api.notion.com/v1/comments", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "Notion-Version": "2022-06-28",
+    },
+    body: JSON.stringify({
+      parent: { page_id: pageId },
+      rich_text: [
+        {
+          type: "mention",
+          mention: { type: "user", user: { id: NOTION_NOTIFY_USER_ID } },
+        },
+        { type: "text", text: { content: " 新しいお問い合わせです。" } },
+      ],
+    }),
+  });
   return response.ok;
 }
 
@@ -93,7 +126,7 @@ async function postToFormSubmit(inquiry: Inquiry, email: string): Promise<boolea
       name: inquiry.name,
       contact: inquiry.contact,
       message: inquiry.message,
-      _subject: "osushi-cr.dev 仕事の相談",
+      _subject: "osushi-cr.dev お問い合わせ",
     }),
   });
   return response.ok;
