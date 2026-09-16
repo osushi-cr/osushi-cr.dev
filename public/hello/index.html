@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>仕事の相談 — お寿司</title>
+  <meta name="description" content="仕事の相談、お気軽にどうぞ。お寿司（@osushi_cr）">
+  <link rel="canonical" href="https://osushi-cr.dev/hello/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍣</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+    :root {
+      --orange: #ff6b35;
+      --orange-glow: rgba(255, 107, 53, 0.15);
+      --bg: #f8f6f3;
+      --card-bg: #ffffff;
+      --text: #1a1a1a;
+      --text-sub: #888;
+      --radius: 20px;
+    }
+
+    html { height: 100%; }
+
+    body {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      background-image:
+        radial-gradient(circle at 20% 30%, var(--orange-glow) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 180, 130, 0.08) 0%, transparent 50%);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      padding: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 36px 32px 32px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 4px 16px rgba(0,0,0,0.04),
+        0 12px 40px rgba(0,0,0,0.06);
+    }
+
+    .back {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--text-sub);
+      text-decoration: none;
+      margin-bottom: 16px;
+    }
+
+    .back:hover { color: var(--orange); }
+
+    .title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      color: var(--text);
+    }
+
+    .lead {
+      margin-top: 8px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    .hello {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .hello input,
+    .hello textarea {
+      width: 100%;
+      border: 1.5px solid #efe8e1;
+      border-radius: 12px;
+      background: #fff;
+      color: var(--text);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 14px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      outline: none;
+      resize: vertical;
+    }
+
+    .hello input:focus,
+    .hello textarea:focus {
+      border-color: var(--orange);
+    }
+
+    .hello textarea { min-height: 120px; }
+
+    .hello-hp {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+    }
+
+    .hello button {
+      width: 100%;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--orange);
+      color: #fff;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 11px 14px;
+      cursor: pointer;
+    }
+
+    .hello button:hover { background: #d45224; }
+    .hello button:disabled { opacity: .6; cursor: wait; }
+
+    .hello-status {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    @media (max-width: 420px) {
+      .card { padding: 32px 24px 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a class="back" href="/">← 名刺へ</a>
+    <h1 class="title">仕事の相談</h1>
+    <p class="lead">お気軽にどうぞ</p>
+    <form class="hello" id="hello" action="/inquiry" method="post">
+      <label class="hello-hp" for="hello-name">お名前</label>
+      <input id="hello-name" name="name" maxlength="80" autocomplete="name" placeholder="お名前">
+      <label class="hello-hp" for="hello-contact">連絡先</label>
+      <input id="hello-contact" name="contact" maxlength="200" autocomplete="email" placeholder="連絡先">
+      <label class="hello-hp" for="hello-message">相談</label>
+      <textarea id="hello-message" name="message" required maxlength="4000" placeholder="相談"></textarea>
+      <input class="hello-hp" name="website" tabindex="-1" autocomplete="off">
+      <button type="submit">送る</button>
+      <p class="hello-status" id="hello-status" hidden></p>
+    </form>
+  </div>
+
+  <script>
+    const hello = document.getElementById('hello');
+    const status = document.getElementById('hello-status');
+    hello.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = hello.querySelector('button');
+      button.disabled = true;
+      status.hidden = false;
+      status.textContent = '送ってる…';
+      try {
+        const response = await fetch('/inquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(hello))),
+        });
+        const body = await response.json().catch(() => ({ ok: false }));
+        if (response.ok && body.ok) {
+          hello.reset();
+          status.textContent = '届きました。ありがとうございます。';
+        } else {
+          status.textContent = '送れなかったみたい。XのDMでも大丈夫です。';
+        }
+      } catch {
+        status.textContent = '送れなかったみたい。XのDMでも大丈夫です。';
+      }
+      button.disabled = false;
+    });
+  </script>
+</body>
+</html>
