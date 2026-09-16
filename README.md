@@ -5,7 +5,6 @@
 | URL | 内容 |
 |------|------|
 | https://osushi-cr.dev/ | デジタル名刺 |
-| https://osushi-cr.dev/work/ | お仕事の相談 |
 | https://www.youtube.com/@kurara_ai_news | くらら（AITuber） |
 | https://6f.osushi-cr.dev/ | 6F（別 Pages プロジェクト） |
 | https://kakuyomu.jp/users/yoshitetsu | カクヨム |
@@ -15,7 +14,7 @@
 
 ソース: https://github.com/osushi-cr/osushi-cr.dev
 
-作品リンクは名刺カード上で、仕事の相談と Works（6F / くらら / カクヨム / Transcribe Edge）、Follow（X / GitHub / note）に分けている。仕事の受け皿は `/work/`。
+作品リンクは名刺カード上で、Works（6F / くらら / カクヨム / Transcribe Edge）と Follow（X / GitHub / note）に分けている。仕事の相談は名刺の一文から X へ。
 
 apex の `/transcribe-edge/` はサブドメインへ 301 する。
 
