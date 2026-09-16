@@ -147,22 +147,79 @@
       animation: fadeUp 0.5s 0.6s ease both;
     }
 
-    .invite {
-      margin-top: 14px;
-      font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: 14px;
-      color: var(--text-sub);
+    .hello {
+      margin-top: 16px;
+      text-align: left;
       animation: fadeUp 0.5s 0.62s ease both;
     }
 
-    .invite a {
-      color: var(--orange);
-      text-decoration: none;
-      font-weight: 700;
+    .hello-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 14px;
+      text-align: center;
+      color: var(--text-sub);
+      margin-bottom: 10px;
     }
 
-    .invite a:hover {
-      text-decoration: underline;
+    .hello input,
+    .hello textarea {
+      width: 100%;
+      border: 1.5px solid #efe8e1;
+      border-radius: 12px;
+      background: #fff;
+      color: var(--text);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 14px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      outline: none;
+      resize: vertical;
+    }
+
+    .hello input:focus,
+    .hello textarea:focus {
+      border-color: var(--orange);
+    }
+
+    .hello textarea {
+      min-height: 92px;
+    }
+
+    .hello-hp {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+    }
+
+    .hello button {
+      width: 100%;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--orange);
+      color: #fff;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 11px 14px;
+      cursor: pointer;
+    }
+
+    .hello button:hover {
+      background: #d45224;
+    }
+
+    .hello button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .hello-status {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-sub);
     }
 
     .field {
@@ -388,7 +445,18 @@
       <span class="field">Game</span>
       <span class="field">Novel</span>
     </div>
-    <p class="invite"><a href="https://x.com/osushi_cr">仕事の相談、お気軽にどうぞ</a></p>
+    <form class="hello" id="hello" action="/inquiry" method="post">
+      <p class="hello-title">仕事の相談、お気軽にどうぞ</p>
+      <label class="hello-hp" for="hello-name">お名前</label>
+      <input id="hello-name" name="name" maxlength="80" autocomplete="name" placeholder="お名前">
+      <label class="hello-hp" for="hello-contact">連絡先</label>
+      <input id="hello-contact" name="contact" maxlength="200" autocomplete="email" placeholder="連絡先">
+      <label class="hello-hp" for="hello-message">相談</label>
+      <textarea id="hello-message" name="message" required maxlength="4000" placeholder="相談"></textarea>
+      <input class="hello-hp" name="website" tabindex="-1" autocomplete="off">
+      <button type="submit">送る</button>
+      <p class="hello-status" id="hello-status" hidden></p>
+    </form>
 
     <div class="divider"></div>
 
@@ -485,6 +553,33 @@
       }
     }
     document.getElementById('qrcode').appendChild(canvas);
+
+    const hello = document.getElementById('hello');
+    const status = document.getElementById('hello-status');
+    hello.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = hello.querySelector('button');
+      button.disabled = true;
+      status.hidden = false;
+      status.textContent = '送ってる…';
+      try {
+        const response = await fetch('/inquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(hello))),
+        });
+        const body = await response.json().catch(() => ({ ok: false }));
+        if (response.ok && body.ok) {
+          hello.reset();
+          status.textContent = '届きました。ありがとうございます。';
+        } else {
+          status.textContent = '送れなかったみたい。XのDMでも大丈夫です。';
+        }
+      } catch {
+        status.textContent = '送れなかったみたい。XのDMでも大丈夫です。';
+      }
+      button.disabled = false;
+    });
   </script>
 </body>
 </html>
