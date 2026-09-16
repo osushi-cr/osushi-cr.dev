@@ -39,15 +39,23 @@ function richText(content: string) {
   };
 }
 
+async function tryDeliver(task: Promise<boolean>): Promise<boolean> {
+  try {
+    return await task;
+  } catch {
+    return false;
+  }
+}
+
 export async function deliverInquiry(
   inquiry: Inquiry,
   env: Pick<Env, "NOTION_TOKEN" | "INQUIRY_EMAIL" | "INQUIRY_WEBHOOK">,
 ): Promise<boolean> {
   const title = inquiry.name || inquiry.contact || "相談";
   const delivered = await Promise.all([
-    env.NOTION_TOKEN ? postToNotion(inquiry, title, env.NOTION_TOKEN) : Promise.resolve(false),
-    env.INQUIRY_EMAIL ? postToFormSubmit(inquiry, env.INQUIRY_EMAIL) : Promise.resolve(false),
-    env.INQUIRY_WEBHOOK ? postToWebhook(inquiry, env.INQUIRY_WEBHOOK) : Promise.resolve(false),
+    env.NOTION_TOKEN ? tryDeliver(postToNotion(inquiry, title, env.NOTION_TOKEN)) : false,
+    env.INQUIRY_EMAIL ? tryDeliver(postToFormSubmit(inquiry, env.INQUIRY_EMAIL)) : false,
+    env.INQUIRY_WEBHOOK ? tryDeliver(postToWebhook(inquiry, env.INQUIRY_WEBHOOK)) : false,
   ]);
 
   return delivered.some(Boolean);
