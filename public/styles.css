@@ -140,7 +140,11 @@ nav a:hover {
 
 .store {
   margin-top: 24px;
-  cursor: default;
+  text-align: center;
+}
+
+.store-link {
+  display: inline-block;
 }
 
 .store-badge {
@@ -148,6 +152,11 @@ nav a:hover {
   height: 40px;
   width: auto;
   margin: 0 auto;
+}
+
+.store-link:hover .store-badge,
+.store-link:focus-visible .store-badge {
+  opacity: 0.88;
 }
 
 .store-note {

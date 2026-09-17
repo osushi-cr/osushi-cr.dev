@@ -117,9 +117,10 @@ def wrap(title: str, description: str, lang: str, canonical: str, body: str, hom
     <img class="hero-icon" src="/icon.png" width="112" height="112" alt="">
     <h1>{heading}</h1>
     <p class="hero-lead">{format_hero_lead(lead)}</p>
-    <div class="store" aria-disabled="true">
-      <img class="store-badge" src="/badges/download-on-the-app-store-jp.svg" width="109" height="40" alt="Download on the App Store">
-      <p class="store-note">近日公開</p>
+    <div class="store">
+      <a class="store-link" href="https://apps.apple.com/jp/app/transcribe-edge/id6806784917">
+        <img class="store-badge" src="/badges/download-on-the-app-store-jp.svg" width="109" height="40" alt="Download on the App Store">
+      </a>
     </div>
   </section>"""
         main = f"{hero}\n  <main class=\"prose\">\n{rest}\n  </main>"
@@ -132,6 +133,7 @@ def wrap(title: str, description: str, lang: str, canonical: str, body: str, hom
   <title>{html.escape(title)}</title>
   <meta name="description" content="{html.escape(description)}">
   <link rel="canonical" href="{html.escape(canonical)}">
+  <meta name="apple-itunes-app" content="app-id=6806784917">
   <link rel="icon" href="/icon.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta property="og:title" content="{html.escape(title)}">
